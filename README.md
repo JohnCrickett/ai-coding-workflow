@@ -42,6 +42,18 @@ An overview of my opinionated AI-assisted coding workflow and the supporting too
 4. When writing prompts be specific, clear and precise. Avoid unnecessary words or information that may distract from the specific task.
 
 
+## Configuring Agents
+
+## CLAUDE.md vs AGENTS.md
+
+Write the AGENTS.md and either symlink CLAUDE.md to it or make a single line CLAUDE.md:
+
+```
+@AGENTS.md
+```
+
+Don't include anything Claude specific.
+
 ## Workflows
 
 - [Greenfield Development](workflows/greenfield.md) - building new software, no legacy users to satisfy.
