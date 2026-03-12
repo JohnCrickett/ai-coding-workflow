@@ -81,16 +81,18 @@ Refer to AGENTS.md for all project rules.
 ## Workflows
 
 - [Greenfield Development](workflows/greenfield.md) - building new software, no legacy users to satisfy.
-- Prototyping/Spike – Quick throwaway code to test feasibility
-- Maintenance – Keeping existing systems running
-- Refactoring – Restructuring without changing behaviour
-- Performance Optimisation – Improving speed, memory usage, or efficiency
-- Rewriting – Replacing old code with new
-- Porting – Moving code to new platforms/languages
-- Debugging – Tracing issues through existing code
-- Bug Fixing – Diagnosing and solving defects 
-- Testing – Writing unit tests, integration tests, or fixing test suites
-- Code Review – Evaluating others' code for quality, bugs, and standards
-- Documentation – Writing/updating technical docs, comments, READMEs
-- Infrastructure – Managing deployment and infrastructure as code
-- Legacy Code Comprehension – Understanding unfamiliar or old codebases
+- [Spike](workflows/spike.md) – Quick throwaway code to test feasibility.
+- Prototyping/MVP - a mimimal version of a solution to test a hypothesis.
+- Maintenance – Keeping existing systems running.
+- Refactoring – Restructuring without changing behaviour.
+- Performance Optimisation – Improving speed, memory usage, or efficiency.
+- Rewriting – Replacing old code with new.
+- Porting – Moving code to new platforms/languages.
+- Debugging – Tracing issues through existing code.
+- Bug Fixing – Diagnosing and solving defects.
+- Testing – Writing unit tests, integration tests, or fixing test suites.
+- Code Review – Evaluating others' code for quality, bugs, and standards.
+- Documentation – Writing/updating technical docs, comments, READMEs.
+- Infrastructure – Managing deployment and infrastructure as code.
+- Legacy Code Comprehension – Understanding unfamiliar or old codebases.
+- Learning - Learning a new programming language, technology or technique.
