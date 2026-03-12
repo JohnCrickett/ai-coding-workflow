@@ -44,7 +44,23 @@ An overview of my opinionated AI-assisted coding workflow and the supporting too
 
 ## Configuring Agents
 
-## CLAUDE.md vs AGENTS.md
+Prefer to use AGENTS.md vs tool specific files. AGENTS.md has first-class support across Cursor, GitHub Copilot, Gemini CLI, Windsurf, Aider, Zed, Warp, RooCode, Amp and a growing list of others.
+
+## Tool Specific vs AGENTS.md
+
+For these tool-specific files:
+
+CLAUDE.md — Claude Code (Anthropic)
+JULES.md — Google Jules
+
+or these AI IDE/editor-specific files:
+
+.cursorrules — Cursor (older format)
+.cursor/rules/ — Cursor (newer format, directory-based)
+.github/copilot-instructions.md — GitHub Copilot
+.windsurf/rules — Windsurf
+
+### CLUADE.md
 
 Write the AGENTS.md and either symlink CLAUDE.md to it or make a single line CLAUDE.md:
 
@@ -53,6 +69,14 @@ Write the AGENTS.md and either symlink CLAUDE.md to it or make a single line CLA
 ```
 
 Don't include anything Claude specific.
+
+### For Those That Don't Support @ Inclusion
+
+A simple instruction will achieve the same result.
+
+```text
+Refer to AGENTS.md for all project rules.
+```
 
 ## Workflows
 
