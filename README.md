@@ -7,12 +7,12 @@ An overview of my opinionated AI-assisted coding workflow and the supporting too
 ### On AI and AI-Assisted Coding
 
 1. The agent harness largely shouldn’t matter. The process should work with all of them.
-2. Most AI-assisted coding processes are too complex. They clutter the context window with unnecessary MCP tools, skills or content from AGENTS.md.
+2. Most AI-assisted coding processes are too complex. They clutter the context window with unnecessary MCP tools, skills, subagents or content from AGENTS.md.
 3. A small tightly defined and focused context window produces the best results.
 4. LLMs do not reason, they do not think, they are not intelligent. They are simple text prediction engines. Treat them that way.
 5. LLMs are non-deterministic. That does not matter as long as the process provides deterministic feedback: compiler warnings as errors, linting, testing, and verifyable acceptance criteria.
 6. Don't get attached to the code. Be prepared to revert changes and retry with refinements to the context.
-7. Fast feedback helps. Provide a way for an LLM to get feedback on its work.
+7. Fast feedback helps. Provide a way for an LLM to get feedback on its work. For example, tests, compilers and linters.
 8. Coding standards and conventions remain useful. LLMs have been trained on code that follows common ones and to copy examples in their context. When your code align with those patterns, you get better results.
 
 
@@ -33,6 +33,7 @@ An overview of my opinionated AI-assisted coding workflow and the supporting too
 
 - `skills/` - contains the skills I install in an agent.
 - `tools/` - command line tools I use to setup a project.
+- `workflows/` - documentation about AI coding workflows I use.
 
 ## Philosophy 
 
