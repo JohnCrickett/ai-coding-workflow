@@ -1,13 +1,14 @@
 #!/bin/bash
 # Ralph Loop - Autonomous AI agent loop
 # Supports: claude, amp, copilot
-# Usage: ./ralph-loop.sh [--agent AGENT] [--prompt PROMPT_FILE] [--max-iterations N]
+# Usage: ./ralph-loop.sh [--agent AGENT] [--prompt PROMPT_FILE | --prompt-string "TEXT"] [--max-iterations N]
 
-set -e
+set -eo pipefail
 
 # Defaults
 AGENT="amp"
 PROMPT_FILE=""
+PROMPT_STRING=""
 MAX_ITERATIONS=10
 
 # Help function
@@ -19,35 +20,37 @@ Usage: ./ralph-loop.sh [options]
 
 Options:
   --agent AGENT             AI agent to use: claude, amp, copilot (default: amp)
-  --prompt PROMPT_FILE      Path to prompt file (required)
+  --prompt PROMPT_FILE      Path to prompt file (one of --prompt or --prompt-string required)
+  --prompt-string "TEXT"    Prompt as inline string (one of --prompt or --prompt-string required)
   --max-iterations N        Maximum iterations (default: 10)
   -h, --help               Show this help message
 
 Agents:
-  amp      AmpCode CLI — cat prompt | amp --dangerously-allow-all
-  claude   Claude Code CLI — claude --dangerously-allow-all -p "prompt"
+  amp      AmpCode CLI — amp -x "prompt"
+  claude   Claude Code CLI — claude -p "prompt"
   copilot  GitHub Copilot CLI — gh copilot suggest (limited agentic support)
 
 Examples:
   ./ralph-loop.sh --prompt ./prompt.md
+  ./ralph-loop.sh --prompt-string "Fix the failing tests in src/"
   ./ralph-loop.sh --agent claude --prompt ./spec.md --max-iterations 5
-  ./ralph-loop.sh --agent amp --prompt /path/to/spec.md
+  ./ralph-loop.sh --agent amp --prompt-string "Refactor the auth module"
   ./ralph-loop.sh --agent copilot --prompt ./prompt.md
 EOF
 }
 
-# Run the selected agent with the prompt file
+# Run the selected agent with a prompt string
 run_agent() {
-  local prompt_file="$1"
+  local prompt="$1"
   case "$AGENT" in
     amp)
-      cat "$prompt_file" | amp --dangerously-allow-all
+      amp -x "$prompt"
       ;;
     claude)
-      claude --dangerously-allow-all -p "$(cat "$prompt_file")"
+      claude -p "$prompt"
       ;;
     copilot)
-      gh copilot suggest "$(cat "$prompt_file")"
+      gh copilot suggest "$prompt"
       ;;
   esac
 }
@@ -61,6 +64,10 @@ while [[ $# -gt 0 ]]; do
       ;;
     --prompt)
       PROMPT_FILE="$2"
+      shift 2
+      ;;
+    --prompt-string)
+      PROMPT_STRING="$2"
       shift 2
       ;;
     --max-iterations)
@@ -88,16 +95,30 @@ case "$AGENT" in
     ;;
 esac
 
-# Validate prompt file
-if [ -z "$PROMPT_FILE" ]; then
-  echo "Error: --prompt is required"
+# Validate prompt input
+if [ -n "$PROMPT_FILE" ] && [ -n "$PROMPT_STRING" ]; then
+  echo "Error: --prompt and --prompt-string are mutually exclusive"
+  exit 1
+fi
+
+if [ -z "$PROMPT_FILE" ] && [ -z "$PROMPT_STRING" ]; then
+  echo "Error: one of --prompt or --prompt-string is required"
   show_help
   exit 1
 fi
 
-if [ ! -f "$PROMPT_FILE" ]; then
+if [ -n "$PROMPT_FILE" ] && [ ! -f "$PROMPT_FILE" ]; then
   echo "Error: Prompt file not found: $PROMPT_FILE"
   exit 1
+fi
+
+# Resolve prompt content
+if [ -n "$PROMPT_FILE" ]; then
+  PROMPT_CONTENT="$(cat "$PROMPT_FILE")"
+  PROMPT_DISPLAY="$PROMPT_FILE"
+else
+  PROMPT_CONTENT="$PROMPT_STRING"
+  PROMPT_DISPLAY="(inline string)"
 fi
 
 if ! [[ "$MAX_ITERATIONS" =~ ^[0-9]+$ ]] || [ "$MAX_ITERATIONS" -lt 1 ]; then
@@ -131,7 +152,7 @@ fi
 
 echo "🤖 Ralph Loop Starting"
 echo "   Agent: $AGENT"
-echo "   Prompt: $PROMPT_FILE"
+echo "   Prompt: $PROMPT_DISPLAY"
 echo "   Max Iterations: $MAX_ITERATIONS"
 echo "   Log: $LOG_FILE"
 echo ""
@@ -141,18 +162,22 @@ for i in $(seq 1 $MAX_ITERATIONS); do
   echo "  Iteration $i / $MAX_ITERATIONS  [$AGENT]"
   echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
-  # Run agent with the prompt
-  OUTPUT=$(run_agent "$PROMPT_FILE" 2>&1 | tee -a "$LOG_FILE") || true
+  # Run agent — stream output to both terminal and log
+  ITER_LOG="$LOG_DIR/ralph-$TIMESTAMP-iter$i.log"
+  echo "" | tee -a "$LOG_FILE"
+  echo "## Iteration $i - $(date)" | tee -a "$LOG_FILE" >> "$PROGRESS_FILE"
 
-  # Log iteration
+  ITER_EXIT=0
+  run_agent "$PROMPT_CONTENT" 2>&1 | tee -a "$ITER_LOG" "$LOG_FILE" || ITER_EXIT=${PIPESTATUS[0]}
+
+  # Log iteration result
   {
-    echo ""
-    echo "## Iteration $i - $(date)"
-    echo "Status: $(if echo "$OUTPUT" | grep -q '<promise>COMPLETE</promise>' 2>/dev/null; then echo "COMPLETE"; else echo "CONTINUE"; fi)"
-  } >> "$PROGRESS_FILE"
+    echo "Agent: $AGENT"
+    echo "Exit code: $ITER_EXIT"
+  } | tee -a "$LOG_FILE" >> "$PROGRESS_FILE"
 
-  # Check for completion signal
-  if echo "$OUTPUT" | grep -q "<promise>COMPLETE</promise>" 2>/dev/null; then
+  # Check for completion via exit code (0 = success)
+  if [ "$ITER_EXIT" -eq 0 ]; then
     echo ""
     echo "✅ Ralph completed all tasks!"
     echo "   Completed at iteration $i of $MAX_ITERATIONS"
@@ -172,5 +197,5 @@ done
 echo ""
 echo "⚠️  Ralph reached max iterations ($MAX_ITERATIONS) without completion"
 echo "   Check $PROGRESS_FILE for details"
-echo "   Increase --max-iterations or review prompt at: $PROMPT_FILE"
+echo "   Increase --max-iterations or review prompt: $PROMPT_DISPLAY"
 exit 1
