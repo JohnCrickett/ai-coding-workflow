@@ -19,7 +19,7 @@ cat > spec/project.md << 'EOL'
 EOL
 }
 
-write_agentmd () {
+write_agentsmd () {
 cat > AGENTS.md << 'EOL'
 ## Commands
 - Build: `{BUILD COMMAND}` ({BUILD COMMAND DETAILS})
@@ -40,8 +40,17 @@ cat > AGENTS.md << 'EOL'
 EOL
 }
 
+write_claudemd () {
+cat > CLAUDE.md << 'EOL'
+@AGENTS.md
+EOL
+}
+
 # Create template project spec
 write_project_spec
 
-# Create template Agent.md
-write_agentmd
+# Create template AGENTS.md
+write_agentsmd
+
+# Create CLAUDE.md
+write_claudemd

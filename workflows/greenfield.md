@@ -11,6 +11,7 @@ My workflow assumes some structure exists in the project:
 ```text
 project/
 ├── AGENTS.md
+├── CLAUDE.md
 ├── design/
 ├── memory/
 ├── plan/
@@ -22,6 +23,7 @@ These are used as follows:
 
 - `AGENTS.md` - This is the agents file, built on the [AGENTS.md](https://agents.md/) specification, it should contain the least amount of detail to required to guide the agent through the project. Covering: Commands, Project Structure, and Process.
 - `design` - Any design documents created will be stored here.
+- `CLAUDE.md` - This is directs Claude Code to read the AGENTS/md file.
 - `memory` - A record of what has been learned during the development of the project. It provides a basic "memory" for the LLM between context windows.
 - `plan` - Any plans created will be stored here.
 - `spec` - Any specifications and requirements created will be stored here. The starting point for a project is a `project.md` that should provide the high level overview of the project and requirements.
