@@ -4,8 +4,8 @@ echo "Project Setup"
 # Create directories
 mkdir -p design
 mkdir -p memory
-mkdir -p plan
-mkdir -p spec
+mkdir -p plans
+mkdir -p specs
 
 write_project_spec () {
 cat > spec/project.md << 'EOL'
