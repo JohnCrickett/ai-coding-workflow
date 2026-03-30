@@ -3,3 +3,7 @@ test/
 
 # Ralph
 .ralph/
+
+
+# Mac stuff
+.DS_Store
