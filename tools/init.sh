@@ -8,7 +8,7 @@ mkdir -p plans
 mkdir -p specs
 
 write_project_spec () {
-cat > spec/project.md << 'EOL'
+cat > specs/project.md << 'EOL'
 # Project Spec: {PROJECT TITLE}
 
 ## Objective
